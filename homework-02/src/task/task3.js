@@ -1,7 +1,3 @@
-const later = function wait(time, text) {
-  return new Promise(function(resolve) {
-    setTimeout(resolve, time, text);
-  });
-};
+const later = (time, text) => new Promise((resolve) => setTimeout(resolve, time, text));
 
 module.exports = later(2000, 'Hello!');
