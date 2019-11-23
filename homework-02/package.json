@@ -4,6 +4,7 @@
   "description": "homework-02",
   "main": "src/app.js",
   "scripts": {
+    "lint": "eslint --fix src/**",
     "start": "node src/app.js"
   },
   "keywords": [],
@@ -24,6 +25,5 @@
     }
   },
   "dependencies": {
-    "nanoid": "^2.1.6"
   }
 }
