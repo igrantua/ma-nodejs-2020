@@ -20,7 +20,8 @@ async function getInputFileList() {
   try {
     files = await fsp.readdir(inputDirName);
   } catch (error) {
-    console.error(`Error while reading ${inputDirName}`);
+    console.error(error.message);
+    throw new Error(`Cannot get list of files from '${inputDirName}'`);
   }
   return files.map((file) => path.join(inputDir, file));
 }
@@ -30,13 +31,15 @@ async function getObjectFromFile(filePath) {
   try {
     compressedBuffer = await fsp.readFile(filePath);
   } catch (error) {
-    console.error(`Error while reading ${filePath}`);
+    console.error(error.message);
+    throw new Error(`Cannot read file '${filePath}'`);
   }
   let jsonBuffer;
   try {
     jsonBuffer = await gunzip(compressedBuffer);
   } catch (error) {
-    console.error(`Error while extracting ${compressedBuffer}`);
+    console.error(error.message);
+    throw new Error(`Cannot extract file from '${compressedBuffer}'`);
   }
   let object;
   let json;
@@ -44,7 +47,8 @@ async function getObjectFromFile(filePath) {
     json = jsonBuffer.toString();
     object = JSON.parse(json);
   } catch (error) {
-    console.error(`Error while parsing ${json}`);
+    console.error(error.message);
+    throw new Error(`Cannot parse file '${json}'`);
   }
   return object;
 }
@@ -68,7 +72,8 @@ async function buildOutputObject(files) {
       // eslint-disable-next-line no-await-in-loop
       object = await getObjectFromFile(file);
     } catch (error) {
-      console.error(`Error while getting object from ${file}`);
+      console.error(error.message);
+      throw new Error(`Cannot get object from '${file}'`);
     }
     object.url = rebuildUrl(object.url);
     const name = path.basename(file.toLowerCase(), '.json.gz');
@@ -84,12 +89,14 @@ async function saveOutput(object) {
   try {
     compressedBuffer = await gzip(buffer);
   } catch (error) {
-    console.error(`Error while compressing ${buffer}`);
+    console.error(error.message);
+    throw new Error(`Cannot compress '${buffer}'`);
   }
   try {
     await fsp.writeFile(outputFile, compressedBuffer);
   } catch (error) {
-    console.error(`Error while writing to  ${outputFile}`);
+    console.error(error.message);
+    throw new Error(`Cannot write to '${outputFile}'`);
   }
 }
 
