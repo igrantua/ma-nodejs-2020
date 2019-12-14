@@ -1,3 +1,5 @@
+const waitFor = require('util').promisify(setTimeout);
+
 const throwDice = () => {
   const diceRoll = Math.floor(Math.random() * 7);
   if (diceRoll === 0) {
@@ -6,20 +8,17 @@ const throwDice = () => {
   return diceRoll;
 };
 
-const waitFor = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
-
 const logDice = async () => {
   try {
     await waitFor(700);
-    const firstDice = await throwDice();
+    const firstDice = throwDice();
     console.log(`You got ${firstDice}`);
 
     await waitFor(1300);
-    const secondDice = await throwDice();
+    const secondDice = throwDice();
     console.log(`You got ${secondDice}`);
 
-    await waitFor(1000);
-    console.log(`You got ${firstDice + secondDice} at all`);
+    setTimeout(() => console.log(`You got ${firstDice + secondDice} at all`), 1000);
   } catch (error) {
     console.log(error);
   }
