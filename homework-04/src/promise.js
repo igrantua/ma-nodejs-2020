@@ -24,10 +24,9 @@ const logDice = () => {
     .then((secondDice) => {
       console.log(`You got ${secondDice}`);
       diceTwo = secondDice;
-      return throwDice(1000);
     })
     .then(() => {
-      console.log(`You got ${diceOne + diceTwo} at all`);
+      setTimeout(() => console.log(`You got ${diceOne + diceTwo} at all`), 1000);
     })
     .catch((e) => {
       console.error(e);
