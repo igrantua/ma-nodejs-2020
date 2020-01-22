@@ -18,11 +18,12 @@ module.exports = async (request, response) => {
         body.push(chunk);
       })
       .on('end', () => {
-        body = Buffer.concat(body).toString();
-        router(
-          { ...request, body: body ? JSON.parse(body) : {}, url: parsedUrl, queryParams },
-          response,
-        );
+        try {
+          body = JSON.parse(Buffer.concat(body).toString());
+        } catch (err) {
+          console.log(err);
+        }
+        router({ ...request, body: body || {}, url: parsedUrl, queryParams }, response);
       });
   } catch (err) {
     console.log(err);

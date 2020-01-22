@@ -7,7 +7,4 @@ const data = `${user.name}:${user.pass}`;
 const base64data = Buffer.from(data).toString('base64');
 const userData = `Basic ${base64data}`;
 
-module.exports = (req) => {
-  if (req === userData) return true;
-  return false;
-};
+module.exports = (req) => req === userData;

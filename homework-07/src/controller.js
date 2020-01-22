@@ -1,14 +1,19 @@
 const os = require('os');
 
-const totalMemory = os.totalmem() / 1024 / 1024;
-const freeMemory = os.freemem() / 1024 / 1024;
-const usedMemory = totalMemory - freeMemory;
-
 let minMemoryLimit;
 
-const memoryMsg =
-  freeMemory < minMemoryLimit ? 'Available memory is under the defined limit' : 'OK';
-
+function getTotalMemory() {
+  return os.totalmem() / 1024 / 1024;
+}
+function getFreeMemory() {
+  return os.freemem() / 1024 / 1024;
+}
+function getUsedMemory() {
+  return os.totalmem() / 1024 / 1024 - os.freemem() / 1024 / 1024;
+}
+function getMemoryMsg() {
+  return getFreeMemory() < minMemoryLimit ? 'Available memory is under the defined limit' : 'OK';
+}
 function isNotAuthUser(res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 401;
@@ -18,13 +23,12 @@ function isNotAuthUser(res) {
     }),
   );
 }
-
 function postLimit(req, res) {
   res.setHeader('Content-Type', 'application/json');
-  const newLimit = Number(req.queryParams.limit);
+  const newLimit = Number(req.body.limit);
+  // console.log(req.body.limit);
   if (Number.isInteger(newLimit) && newLimit >= 0) {
     minMemoryLimit = newLimit;
-    // console.log(minMemoryLimit);
     res.statusCode = 200;
     res.end(
       JSON.stringify({
@@ -40,53 +44,48 @@ function postLimit(req, res) {
     );
   }
 }
-
 function getMetricsAll(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
   res.end(
     JSON.stringify({
-      message: memoryMsg,
-      total: totalMemory.toFixed(3),
-      free: freeMemory.toFixed(3),
-      allocated: usedMemory.toFixed(3),
+      message: getMemoryMsg(),
+      total: getTotalMemory().toFixed(3),
+      free: getFreeMemory().toFixed(3),
+      allocated: getUsedMemory().toFixed(3),
     }),
   );
 }
-
 function getMetricsTotal(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
   res.end(
     JSON.stringify({
       message: 'OK',
-      total: totalMemory.toFixed(3),
+      total: getTotalMemory().toFixed(3),
     }),
   );
 }
-
 function getMetricsFree(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
   res.end(
     JSON.stringify({
-      message: memoryMsg,
-      free: freeMemory.toFixed(3),
+      message: getMemoryMsg(),
+      free: getFreeMemory().toFixed(3),
     }),
   );
 }
-
 function getMetricsAllocated(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
   res.end(
     JSON.stringify({
       message: 'OK',
-      allocated: usedMemory.toFixed(3),
+      allocated: getUsedMemory().toFixed(3),
     }),
   );
 }
-
 function getInvalidFilter(req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 400;
@@ -96,7 +95,6 @@ function getInvalidFilter(req, res) {
     }),
   );
 }
-
 function getInternalError(res) {
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 500;
@@ -106,7 +104,6 @@ function getInternalError(res) {
     }),
   );
 }
-
 module.exports = {
   isNotAuthUser,
   postLimit,
