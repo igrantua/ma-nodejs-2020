@@ -19,7 +19,9 @@ module.exports = async (request, response) => {
       })
       .on('end', () => {
         try {
-          body = JSON.parse(Buffer.concat(body).toString());
+          if (body.length !== 0) {
+            body = JSON.parse(Buffer.concat(body).toString());
+          }
         } catch (err) {
           console.log(err);
         }
