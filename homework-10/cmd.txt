@@ -1,0 +1,12 @@
+./node_modules/.bin/knex --help
+NODE_ENV=development ./node_modules/.bin/knex --knexfile=./src/config/knexfile --env=development migrate:latest --verbose
+NODE_ENV=development ./node_modules/.bin/knex --env=development --knexfile ./src/config/knexfile migrate:down  20200203194201_addUsersTable.js
+
+
+CREATE TABLE users
+(
+    id serial PRIMARY KEY,
+    login VARCHAR (50) UNIQUE NOT NULL,
+    password VARCHAR (50) NOT NULL,
+    token VARCHAR (50) UNIQUE NOT NULL,
+)
