@@ -11,8 +11,8 @@ module.exports = {
       password: process.env.DBPASSWD,
     },
     pool: {
-      min: 1,
-      max: 1,
+      min: 2,
+      max: 10,
     },
     debug: true,
     migrations: {

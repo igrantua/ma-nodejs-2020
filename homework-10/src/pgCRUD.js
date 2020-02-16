@@ -1,7 +1,5 @@
 const pgClient = require('./pgClient');
 
-pgClient.connect();
-
 const create = `CREATE TABLE "users" (
   "id" serial PRIMARY KEY,
   "login" VARCHAR (50) UNIQUE NOT NULL,
@@ -28,39 +26,48 @@ const deleteUserById = {
   values: [1],
 };
 
-const createTablePg = () => {
-  pgClient
-    .query(create)
-    .then(res => console.log(res))
-    .catch(e => console.error(e.stack));
-};
-const insertUserPg = () => {
-  pgClient
-    .query(insertUser)
-    .then(res => console.log(res))
-    .catch(e => console.error(e.stack));
-};
-const updateUserPasswordPg = () => {
-  pgClient
-    .query(updateUserPassword)
-    .then(res => console.log(res))
-    .catch(e => console.error(e.stack));
-};
-const selectUserByIdPg = () => {
-  pgClient
-    .query(selectUserById)
-    .then(res => console.log(res.rows))
-    .catch(e => console.error(e.stack));
-};
-const deleteUserByIdPg = () => {
-  pgClient
-    .query(deleteUserById)
-    .then(res => console.log(res))
-    .catch(e => console.error(e.stack));
-};
+async function createTablePg() {
+  await pgClient.query(create).then(res => console.log(res));
+}
+async function insertUserPg() {
+  await pgClient.query(insertUser).then(res => console.log(res));
+}
+async function updateUserPasswordPg() {
+  await pgClient.query(updateUserPassword).then(res => console.log(res));
+}
+async function selectUserByIdPg() {
+  await pgClient.query(selectUserById).then(res => console.log(res.rows));
+}
+async function deleteUserByIdPg() {
+  await pgClient.query(deleteUserById).then(res => console.log(res));
+}
 
-createTablePg();
-insertUserPg();
-updateUserPasswordPg();
-selectUserByIdPg();
-deleteUserByIdPg();
+(async () => {
+  pgClient.connect();
+  try {
+    await createTablePg();
+  } catch (e) {
+    console.error(e.stack);
+  }
+  try {
+    await insertUserPg();
+  } catch (e) {
+    console.error(e.stack);
+  }
+  try {
+    await updateUserPasswordPg();
+  } catch (e) {
+    console.error(e.stack);
+  }
+  try {
+    await selectUserByIdPg();
+  } catch (e) {
+    console.error(e.stack);
+  }
+  try {
+    await deleteUserByIdPg();
+  } catch (e) {
+    console.error(e.stack);
+  }
+  pgClient.end();
+})();
