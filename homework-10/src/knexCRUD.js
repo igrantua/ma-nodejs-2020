@@ -1,6 +1,7 @@
 const knex = require('./knexClient');
 
 const userOne = { login: 'brianc', password: 'brianmcarlsongmail', token: 'qwertyuqwertyu' };
+const loginOne = 'brianc';
 const idOne = 1;
 const passwordOne = 'uytrewquytrewq';
 
@@ -17,9 +18,9 @@ async function updateUserPasswordKnex(ID, newPassword) {
     .then(res => console.log(res));
 }
 
-async function selectUserByIdKnex(ID) {
+async function selectUserByLoginKnex(selectLogin) {
   await knex('usersKnex')
-    .where({ id: ID })
+    .where({ login: selectLogin })
     .then(res => console.log(res));
 }
 
@@ -42,7 +43,7 @@ async function deleteUserByIdKnex(ID) {
     console.error(e.stack);
   }
   try {
-    await selectUserByIdKnex(idOne);
+    await selectUserByLoginKnex(loginOne);
   } catch (e) {
     console.error(e.stack);
   }
